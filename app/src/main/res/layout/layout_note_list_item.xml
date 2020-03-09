@@ -36,7 +36,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="20"
         android:hint="25 Jun"
-        android:lines="1"
         android:padding="10dp"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
