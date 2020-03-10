@@ -1,7 +1,7 @@
 package gillesloriquer.com;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -62,6 +62,8 @@ public class NotesListActivity extends AppCompatActivity implements NotesRecycle
 
     @Override
     public void onNoteClick(int position) {
-        Log.d(TAG, "onNoteClick: " + position);
+        Intent intent = new Intent(this, NoteActivity.class);
+        intent.putExtra(NoteActivity.SELECTED_NOTE, mNotes.get(position));
+        startActivity(intent);
     }
 }
