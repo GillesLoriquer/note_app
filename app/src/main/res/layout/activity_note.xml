@@ -21,10 +21,11 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <EditText
+    <gillesloriquer.com.LinedEditText
         android:id="@+id/note_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="top"
         android:padding="5dp"
         android:textColor="@color/black"
         android:textSize="23sp" />
