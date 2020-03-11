@@ -6,6 +6,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,7 +17,8 @@ import gillesloriquer.com.models.Note;
 public class NoteActivity extends AppCompatActivity implements
         View.OnTouchListener,
         GestureDetector.OnGestureListener,
-        GestureDetector.OnDoubleTapListener {
+        GestureDetector.OnDoubleTapListener,
+        View.OnClickListener {
 
     private static final String TAG = "NoteActivity";
 
@@ -31,6 +33,7 @@ public class NoteActivity extends AppCompatActivity implements
     private EditText mEditTitle;
     private TextView mViewTitle;
     private RelativeLayout mArrowContainer, mCheckContainer;
+    private ImageButton mBackArrow, mCheck;
 
     // vars
     private boolean mIsNewNote;
@@ -43,11 +46,16 @@ public class NoteActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
 
-        mViewTitle = findViewById(R.id.note_text_title);
-        mEditTitle = findViewById(R.id.note_edit_title);
-        mLinedEditText = findViewById(R.id.note_content);
+        // view mode
         mArrowContainer = findViewById(R.id.arrow_container);
+        mBackArrow = findViewById(R.id.toolbar_back_arrow);
+        mViewTitle = findViewById(R.id.note_text_title);
+        // edit mode
         mCheckContainer = findViewById(R.id.check_container);
+        mEditTitle = findViewById(R.id.note_edit_title);
+        mCheck = findViewById(R.id.toolbar_check);
+        // common
+        mLinedEditText = findViewById(R.id.note_content);
 
         if (getIncomingIntent()) {
             setNewNoteProperties();
@@ -110,6 +118,8 @@ public class NoteActivity extends AppCompatActivity implements
     private void setTouchListener() {
         mLinedEditText.setOnTouchListener(this);
         mGestureDetector = new GestureDetector(this, this);
+        mViewTitle.setOnClickListener(this);
+        mCheck.setOnClickListener(this);
     }
 
     @Override
@@ -118,6 +128,38 @@ public class NoteActivity extends AppCompatActivity implements
         // on va ici transmettre au GestureDetectore le touch event
         // suivant le type d'event l'une des méthodes ci-dessous sera appelée
         return mGestureDetector.onTouchEvent(event);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.toolbar_check: {
+                disableEditMode();
+                break;
+            }
+            case R.id.note_text_title: {
+                enableEditMode();
+                mEditTitle.requestFocus();
+                mEditTitle.setSelection(mEditTitle.length());   // place le curseur en bout de chaine
+                break;
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mMode == EDIT_MODE_ENABLED) {
+            onClick(mCheck);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {
+        Log.d(TAG, "onDoubleTap: double tapped!");
+        enableEditMode();
+        return false;
     }
 
     @Override
@@ -152,13 +194,6 @@ public class NoteActivity extends AppCompatActivity implements
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
-        return false;
-    }
-
-    @Override
-    public boolean onDoubleTap(MotionEvent e) {
-        Log.d(TAG, "onDoubleTap: double tapped!");
-        enableEditMode();
         return false;
     }
 
