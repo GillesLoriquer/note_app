@@ -7,6 +7,7 @@
     android:orientation="horizontal"
     android:weightSum="100">
 
+    <!-- VIEW MODE -->
     <RelativeLayout
         android:id="@+id/arrow_container"
         android:layout_width="0dp"
@@ -24,6 +25,7 @@
 
     </RelativeLayout>
 
+    <!-- EDIT MODE -->
     <RelativeLayout
         android:id="@+id/check_container"
         android:layout_width="0dp"
@@ -41,6 +43,7 @@
 
     </RelativeLayout>
 
+    <!-- VIEW MODE -->
     <TextView
         android:id="@+id/note_text_title"
         android:layout_width="0dp"
@@ -52,6 +55,7 @@
         android:textSize="23sp"
         android:visibility="visible" />
 
+    <!-- EDIT MODE -->
     <EditText
         android:id="@+id/note_edit_title"
         android:layout_width="0dp"
