@@ -32,4 +32,8 @@ dependencies {
 
     // design support library (for toolbars)
     implementation 'com.android.support:design:28.0.0'
+
+    // Room
+    implementation "androidx.room:room-runtime:2.2.4"
+    annotationProcessor "androidx.room:room-compiler:2.2.4"
 }
