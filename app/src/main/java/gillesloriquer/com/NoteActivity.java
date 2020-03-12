@@ -1,6 +1,7 @@
 package gillesloriquer.com;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -152,6 +153,7 @@ public class NoteActivity extends AppCompatActivity implements
         mGestureDetector = new GestureDetector(this, this);
         mViewTitle.setOnClickListener(this);
         mCheck.setOnClickListener(this);
+        mBackArrow.setOnClickListener(this);
     }
 
     @Override
@@ -177,6 +179,10 @@ public class NoteActivity extends AppCompatActivity implements
                 mEditTitle.requestFocus();
                 mEditTitle.setSelection(mEditTitle.length());   // place le curseur en bout de chaine
                 showSoftKeyboard(mEditTitle);
+                break;
+            }
+            case R.id.toolbar_back_arrow: {
+                finish();
                 break;
             }
         }
