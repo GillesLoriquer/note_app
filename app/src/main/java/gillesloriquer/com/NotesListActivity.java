@@ -2,11 +2,14 @@ package gillesloriquer.com;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +18,9 @@ import gillesloriquer.com.adapters.NotesRecyclerAdapter;
 import gillesloriquer.com.models.Note;
 import gillesloriquer.com.util.VerticalSpacingItemDecorator;
 
-public class NotesListActivity extends AppCompatActivity implements NotesRecyclerAdapter.OnNoteListener {
+public class NotesListActivity extends AppCompatActivity
+        implements NotesRecyclerAdapter.OnNoteListener,
+        FloatingActionButton.OnClickListener {
 
     private static final String TAG = "NotesListActivity";
 
@@ -31,6 +36,7 @@ public class NotesListActivity extends AppCompatActivity implements NotesRecycle
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notes_list);
         mRecyclerView = findViewById(R.id.recycler_view);
+        findViewById(R.id.fab).setOnClickListener(this);
 
         initRecyclerView();
 
@@ -65,5 +71,11 @@ public class NotesListActivity extends AppCompatActivity implements NotesRecycle
         Intent intent = new Intent(this, NoteActivity.class);
         intent.putExtra(NoteActivity.SELECTED_NOTE, mNotes.get(position));
         startActivity(intent);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Intent i = new Intent(this, NoteActivity.class);
+        startActivity(i);
     }
 }
