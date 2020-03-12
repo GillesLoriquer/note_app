@@ -1,7 +1,6 @@
 package gillesloriquer.com;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -27,6 +26,7 @@ public class NoteActivity extends AppCompatActivity implements
     // constants
     public static final String SELECTED_NOTE = "selected_note";
     private static final String DEFAULT_NOTE_TITLE = "Note Title";
+    private static final String MODE = "mode";
     private static final int EDIT_MODE_ENABLED = 1;
     private static final int EDIT_MODE_DISABLED = 0;
 
@@ -101,7 +101,7 @@ public class NoteActivity extends AppCompatActivity implements
 
     private void showSoftKeyboard(View v) {
         InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.showSoftInput(v, 0);
+        inputMethodManager.showSoftInput(v, InputMethodManager.SHOW_FORCED);
     }
 
     private void enableEditMode() {
@@ -116,6 +116,8 @@ public class NoteActivity extends AppCompatActivity implements
         mMode = EDIT_MODE_ENABLED;
 
         enableContentInteraction();
+
+        showSoftKeyboard(mLinedEditText);
     }
 
     private void disableEditMode() {
@@ -241,5 +243,20 @@ public class NoteActivity extends AppCompatActivity implements
     @Override
     public boolean onDoubleTapEvent(MotionEvent e) {
         return false;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(MODE, mMode);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mMode = savedInstanceState.getInt(MODE);
+        if (mMode == EDIT_MODE_ENABLED) {
+            enableEditMode();
+        }
     }
 }
