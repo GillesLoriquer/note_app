@@ -1,10 +1,11 @@
 package gillesloriquer.com;
 
+import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -62,6 +63,7 @@ public class NoteActivity extends AppCompatActivity implements
             enableEditMode();
         } else {
             setNoteProperties();
+            disableContentInteraction();
         }
 
         setTouchListener();
@@ -69,8 +71,8 @@ public class NoteActivity extends AppCompatActivity implements
 
     private boolean getIncomingIntent() {
         if (getIntent().hasExtra(SELECTED_NOTE)) {
-            mInitialNote = getIntent().getParcelableExtra(SELECTED_NOTE);
             mIsNewNote = false;
+            mInitialNote = getIntent().getParcelableExtra(SELECTED_NOTE);
             mMode = EDIT_MODE_DISABLED;
         } else {
             mIsNewNote = true;
@@ -78,6 +80,27 @@ public class NoteActivity extends AppCompatActivity implements
         }
 
         return mIsNewNote;
+    }
+
+    private void setNewNoteProperties() {
+        mViewTitle.setText(DEFAULT_NOTE_TITLE);
+        mEditTitle.setText(DEFAULT_NOTE_TITLE);
+    }
+
+    private void setNoteProperties() {
+        mViewTitle.setText(mInitialNote.getTitle());
+        mEditTitle.setText(mInitialNote.getTitle());
+        mLinedEditText.setText(mInitialNote.getContent());
+    }
+
+    private void hideSoftKeyboard(View v) {
+        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+    }
+
+    private void showSoftKeyboard(View v) {
+        InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.showSoftInput(v, 0);
     }
 
     private void enableEditMode() {
@@ -90,6 +113,8 @@ public class NoteActivity extends AppCompatActivity implements
         mViewTitle.setVisibility(View.GONE);
 
         mMode = EDIT_MODE_ENABLED;
+
+        enableContentInteraction();
     }
 
     private void disableEditMode() {
@@ -102,17 +127,24 @@ public class NoteActivity extends AppCompatActivity implements
         mViewTitle.setVisibility(View.VISIBLE);
 
         mMode = EDIT_MODE_DISABLED;
+
+        disableContentInteraction();
     }
 
-    private void setNoteProperties() {
-        mViewTitle.setText(mInitialNote.getTitle());
-        mEditTitle.setText(mInitialNote.getTitle());
-        mLinedEditText.setText(mInitialNote.getContent());
+    private void enableContentInteraction() {
+        mLinedEditText.setKeyListener(new EditText(this).getKeyListener());
+        mLinedEditText.setFocusable(true);
+        mLinedEditText.setFocusableInTouchMode(true);
+        mLinedEditText.setCursorVisible(true);
+        mLinedEditText.requestFocus();
     }
 
-    private void setNewNoteProperties() {
-        mViewTitle.setText(DEFAULT_NOTE_TITLE);
-        mEditTitle.setText(DEFAULT_NOTE_TITLE);
+    private void disableContentInteraction() {
+        mLinedEditText.setKeyListener(null);
+        mLinedEditText.setFocusable(false);
+        mLinedEditText.setFocusableInTouchMode(false);
+        mLinedEditText.setCursorVisible(false);
+        mLinedEditText.clearFocus();
     }
 
     private void setTouchListener() {
@@ -135,12 +167,16 @@ public class NoteActivity extends AppCompatActivity implements
         switch (v.getId()) {
             case R.id.toolbar_check: {
                 disableEditMode();
+                hideSoftKeyboard(mLinedEditText);
+                // TODO : à déplacer
+                mViewTitle.setText(mEditTitle.getText());
                 break;
             }
             case R.id.note_text_title: {
                 enableEditMode();
                 mEditTitle.requestFocus();
                 mEditTitle.setSelection(mEditTitle.length());   // place le curseur en bout de chaine
+                showSoftKeyboard(mEditTitle);
                 break;
             }
         }
@@ -157,7 +193,6 @@ public class NoteActivity extends AppCompatActivity implements
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
-        Log.d(TAG, "onDoubleTap: double tapped!");
         enableEditMode();
         return false;
     }
