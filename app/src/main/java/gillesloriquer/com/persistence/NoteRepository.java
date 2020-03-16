@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
+import gillesloriquer.com.async.InsertAsyncTask;
 import gillesloriquer.com.models.Note;
 
 public class NoteRepository {
@@ -17,6 +18,7 @@ public class NoteRepository {
     }
 
     public void insertNoteTask(Note note) {
+        new InsertAsyncTask(mNoteDatabase.getNoteDao()).execute(note);
     }
 
     public void updateNote(Note note) {

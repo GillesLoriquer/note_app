@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import gillesloriquer.com.models.Note;
+import gillesloriquer.com.persistence.NoteRepository;
 
 public class NoteActivity extends AppCompatActivity implements
         View.OnTouchListener,
@@ -40,13 +41,17 @@ public class NoteActivity extends AppCompatActivity implements
     // vars
     private boolean mIsNewNote;
     private Note mInitialNote;
+    private Note mFinalNote;
     private GestureDetector mGestureDetector;
     private int mMode;
+    private NoteRepository mNoteRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note);
+
+        mNoteRepository = new NoteRepository(this);
 
         // view mode
         mArrowContainer = findViewById(R.id.arrow_container);
@@ -74,6 +79,7 @@ public class NoteActivity extends AppCompatActivity implements
         if (getIntent().hasExtra(SELECTED_NOTE)) {
             mIsNewNote = false;
             mInitialNote = getIntent().getParcelableExtra(SELECTED_NOTE);
+            mFinalNote = getIntent().getParcelableExtra(SELECTED_NOTE);
             mMode = EDIT_MODE_DISABLED;
         } else {
             mIsNewNote = true;
@@ -83,9 +89,26 @@ public class NoteActivity extends AppCompatActivity implements
         return mIsNewNote;
     }
 
+    private void saveChanges() {
+        if (mIsNewNote) {
+            saveNewNote();
+        } else {
+
+        }
+    }
+
+    private void saveNewNote() {
+        mNoteRepository.insertNoteTask(mFinalNote);
+    }
+
     private void setNewNoteProperties() {
         mViewTitle.setText(DEFAULT_NOTE_TITLE);
         mEditTitle.setText(DEFAULT_NOTE_TITLE);
+
+        mInitialNote = new Note();
+        mFinalNote = new Note();
+        mInitialNote.setTitle(DEFAULT_NOTE_TITLE);
+        mFinalNote.setTitle(DEFAULT_NOTE_TITLE);
     }
 
     private void setNoteProperties() {
@@ -132,6 +155,18 @@ public class NoteActivity extends AppCompatActivity implements
         mMode = EDIT_MODE_DISABLED;
 
         disableContentInteraction();
+
+        String title = mEditTitle.getText().toString();
+        String content = mLinedEditText.getText().toString();
+        if (content.length() > 0) {
+            if (!title.toLowerCase().trim().equals(mInitialNote.getTitle().toLowerCase().trim())
+                    || !content.toLowerCase().trim().equals(mInitialNote.getContent().toLowerCase().trim())) {
+                mFinalNote.setTitle(title);
+                mFinalNote.setContent(content);
+                mFinalNote.setTimestamp("Mars 2019");
+                saveChanges();
+            }
+        }
     }
 
     private void enableContentInteraction() {
