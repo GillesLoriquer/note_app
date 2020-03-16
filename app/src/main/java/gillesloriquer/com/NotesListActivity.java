@@ -7,6 +7,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +19,7 @@ import java.util.List;
 
 import gillesloriquer.com.adapters.NotesRecyclerAdapter;
 import gillesloriquer.com.models.Note;
+import gillesloriquer.com.persistence.NoteRepository;
 import gillesloriquer.com.util.VerticalSpacingItemDecorator;
 
 public class NotesListActivity extends AppCompatActivity
@@ -32,6 +34,7 @@ public class NotesListActivity extends AppCompatActivity
     // vars
     private List<Note> mNotes = new ArrayList<>();
     private NotesRecyclerAdapter mNotesRecyclerAdapter;
+    private NoteRepository mNoteRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +43,29 @@ public class NotesListActivity extends AppCompatActivity
         mRecyclerView = findViewById(R.id.recycler_view);
         findViewById(R.id.fab).setOnClickListener(this);
 
+        mNoteRepository = new NoteRepository(this);
+
         initRecyclerView();
 
-        insertFakeNotes();
+        retrieveNotes();
 
         setSupportActionBar((Toolbar) findViewById(R.id.notes_toolbar));
         setTitle("Notes");
+    }
+
+    private void retrieveNotes() {
+        mNoteRepository.retriveNotesTask().observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(List<Note> notes) {
+                if (mNotes.size() > 0) {
+                    mNotes.clear();
+                }
+
+                mNotes.addAll(notes);
+
+                mNotesRecyclerAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void insertFakeNotes() {

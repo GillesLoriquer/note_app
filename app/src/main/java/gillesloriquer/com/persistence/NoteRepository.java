@@ -23,7 +23,7 @@ public class NoteRepository {
     }
 
     public LiveData<List<Note>> retriveNotesTask() {
-        return null;
+        return mNoteDatabase.getNoteDao().getNotes();
     }
 
     public void deleteNote(Note note) {
