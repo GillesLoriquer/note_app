@@ -97,12 +97,16 @@ public class NoteActivity extends AppCompatActivity implements
         if (mIsNewNote) {
             saveNewNote();
         } else {
-
+            updateNote();
         }
     }
 
     private void saveNewNote() {
         mNoteRepository.insertNoteTask(mFinalNote);
+    }
+
+    private void updateNote() {
+        mNoteRepository.updateNote(mFinalNote);
     }
 
     private void setNewNoteProperties() {
@@ -112,7 +116,9 @@ public class NoteActivity extends AppCompatActivity implements
         mInitialNote = new Note();
         mFinalNote = new Note();
         mInitialNote.setTitle(DEFAULT_NOTE_TITLE);
+        mInitialNote.setContent("");
         mFinalNote.setTitle(DEFAULT_NOTE_TITLE);
+        mFinalNote.setContent("");
     }
 
     private void setNoteProperties() {

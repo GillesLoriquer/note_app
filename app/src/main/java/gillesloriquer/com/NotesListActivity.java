@@ -68,17 +68,6 @@ public class NotesListActivity extends AppCompatActivity
         });
     }
 
-    private void insertFakeNotes() {
-        for (int i = 0; i < 100; i++) {
-            Note note = new Note();
-            note.setTitle("Note #" + i);
-            note.setContent("Content #" + i);
-            note.setTimestamp("Jun 2020");
-            mNotes.add(note);
-        }
-        mNotesRecyclerAdapter.notifyDataSetChanged();
-    }
-
     private void initRecyclerView() {
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
@@ -116,7 +105,7 @@ public class NotesListActivity extends AppCompatActivity
     };
 
     private void deleteNote(Note n) {
-        mNotes.remove(n);
+        mNoteRepository.deleteNote(n);
         mNotesRecyclerAdapter.notifyDataSetChanged();
     }
 }
