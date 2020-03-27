@@ -2,6 +2,8 @@ package gillesloriquer.com;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,7 +22,8 @@ public class NoteActivity extends AppCompatActivity implements
         View.OnTouchListener,
         GestureDetector.OnGestureListener,
         GestureDetector.OnDoubleTapListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        TextWatcher {
 
     private static final String TAG = "NoteActivity";
 
@@ -72,7 +75,7 @@ public class NoteActivity extends AppCompatActivity implements
             disableContentInteraction();
         }
 
-        setTouchListener();
+        setListeners();
     }
 
     private boolean getIncomingIntent() {
@@ -157,7 +160,7 @@ public class NoteActivity extends AppCompatActivity implements
         disableContentInteraction();
 
         String title = mEditTitle.getText().toString();
-        String content = mLinedEditText.getText().toString();
+        String content = ((mLinedEditText.getText() != null) ? mLinedEditText.getText().toString() : "");
         if (content.length() > 0) {
             if (!title.toLowerCase().trim().equals(mInitialNote.getTitle().toLowerCase().trim())
                     || !content.toLowerCase().trim().equals(mInitialNote.getContent().toLowerCase().trim())) {
@@ -185,12 +188,13 @@ public class NoteActivity extends AppCompatActivity implements
         mLinedEditText.clearFocus();
     }
 
-    private void setTouchListener() {
+    private void setListeners() {
         mLinedEditText.setOnTouchListener(this);
         mGestureDetector = new GestureDetector(this, this);
         mViewTitle.setOnClickListener(this);
         mCheck.setOnClickListener(this);
         mBackArrow.setOnClickListener(this);
+        mEditTitle.addTextChangedListener(this);
     }
 
     @Override
@@ -207,8 +211,6 @@ public class NoteActivity extends AppCompatActivity implements
             case R.id.toolbar_check: {
                 disableEditMode();
                 hideSoftKeyboard(mLinedEditText);
-                // TODO : à déplacer
-                mViewTitle.setText(mEditTitle.getText());
                 break;
             }
             case R.id.note_text_title: {
@@ -293,5 +295,20 @@ public class NoteActivity extends AppCompatActivity implements
         if (mMode == EDIT_MODE_ENABLED) {
             enableEditMode();
         }
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        mViewTitle.setText(s.toString());
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+
     }
 }
