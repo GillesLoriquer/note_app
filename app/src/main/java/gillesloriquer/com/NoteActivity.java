@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import gillesloriquer.com.models.Note;
 import gillesloriquer.com.persistence.NoteRepository;
+import gillesloriquer.com.util.DateGenerator;
 
 public class NoteActivity extends AppCompatActivity implements
         View.OnTouchListener,
@@ -166,7 +167,7 @@ public class NoteActivity extends AppCompatActivity implements
                     || !content.toLowerCase().trim().equals(mInitialNote.getContent().toLowerCase().trim())) {
                 mFinalNote.setTitle(title);
                 mFinalNote.setContent(content);
-                mFinalNote.setTimestamp("Mars 2019");
+                mFinalNote.setTimestamp(DateGenerator.getCurrentTimestamp());
                 saveChanges();
             }
         }
